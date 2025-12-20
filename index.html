@@ -3,641 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Steam Trade Pro</title>
+    <title>Steam Trade Manager</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        /* --- VARIABLES Y TEMAS --- */
-        :root {
-            /* Tema Oscuro (Cyberpunk/Midnight) */
-            --bg-body: #0b0f19; /* Fondo muy oscuro, casi negro azulado */
-            --bento-gradient: linear-gradient(165deg, #1e293b 0%, #0f172a 100%);
-            --bento-border: rgba(255, 255, 255, 0.08);
-            --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%); /* Azul a Índigo */
-            --text-primary: #f8fafc;
-            --text-secondary: #94a3b8;
-            --input-bg: rgba(15, 23, 42, 0.6); /* Semitransparente */
-            --card-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
-            --glow-color: rgba(59, 130, 246, 0.15); /* Resplandor azul sutil */
-            --stats-bg: rgba(0, 0, 0, 0.3);
-        }
-
-        [data-bs-theme="light"] {
-            /* Tema Claro (Porcelain/Clean) */
-            --bg-body: #f0f4f8;
-            --bento-gradient: linear-gradient(165deg, #ffffff 0%, #f1f5f9 100%);
-            --bento-border: rgba(255, 255, 255, 0.8);
-            --accent-gradient: linear-gradient(135deg, #4f46e5 0%, #8b5cf6 100%); /* Violeta vibrante */
-            --text-primary: #1e293b;
-            --text-secondary: #64748b;
-            --input-bg: rgba(255, 255, 255, 0.7);
-            --card-shadow: 0 10px 15px -3px rgba(168, 178, 201, 0.2), 0 4px 6px -2px rgba(168, 178, 201, 0.1);
-            --glow-color: rgba(79, 70, 229, 0.05);
-            --stats-bg: rgba(241, 245, 249, 0.8);
-        }
-
-        body {
-            background-color: var(--bg-body);
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            color: var(--text-primary);
-            transition: background-color 0.4s ease, color 0.3s ease;
-            padding-bottom: 80px;
-            background-image: radial-gradient(circle at top right, var(--glow-color) 0%, transparent 40%),
-                              radial-gradient(circle at bottom left, var(--glow-color) 0%, transparent 40%);
-            background-attachment: fixed;
-        }
-
-        /* --- BENTO BOX PRO --- */
-        .bento-box {
-            background: var(--bento-gradient);
-            border: 1px solid var(--bento-border);
-            border-radius: 28px; /* Bordes más redondeados */
-            padding: 28px;
-            height: 100%;
-            box-shadow: var(--card-shadow);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            backdrop-filter: blur(10px); /* Efecto cristal si el navegador lo soporta */
-        }
-        
-        /* Efecto Hover sutil */
-        .bento-box:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 25px 30px -5px rgba(0, 0, 0, 0.35);
-            border-color: rgba(255,255,255,0.15);
-        }
-
-        /* Línea superior de color */
-        .bento-box::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 5px;
-            background: var(--accent-gradient);
-            opacity: 1;
-        }
-
-        .bento-title {
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            color: var(--text-secondary);
-            font-weight: 800;
-            margin-bottom: 25px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            opacity: 0.9;
-        }
-
-        /* --- INPUTS MODERNOS (GLASS) --- */
-        .form-control, .input-group-text {
-            background-color: var(--input-bg);
-            border: 1px solid var(--bento-border);
-            color: var(--text-primary);
-            border-radius: 14px;
-            padding: 14px 18px;
-            font-size: 1rem;
-            transition: all 0.2s;
-        }
-
-        .form-control:focus {
-            background-color: var(--input-bg);
-            color: var(--text-primary);
-            box-shadow: 0 0 0 4px var(--glow-color);
-            border-color: #3b82f6;
-            transform: translateY(-1px);
-        }
-
-        .input-group-text { border-right: 0; color: var(--text-secondary); }
-        .input-group .form-control { border-left: 0; }
-        
-        /* Eliminar flechas de number input */
-        input[type=number]::-webkit-inner-spin-button, 
-        input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
-
-        /* --- BOTONES CON DEGRADADO --- */
-        .btn-gradient {
-            background: var(--accent-gradient);
-            border: none;
-            color: white;
-            font-weight: 700;
-            border-radius: 14px;
-            padding: 14px 20px;
-            transition: all 0.3s;
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-        }
-        .btn-gradient:hover { 
-            opacity: 0.95; 
-            color: white; 
-            transform: scale(1.02);
-            box-shadow: 0 6px 15px rgba(59, 130, 246, 0.4);
-        }
-
-        /* Botón tema */
-        .theme-toggle {
-            cursor: pointer;
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            background: var(--bento-gradient);
-            border: 1px solid var(--bento-border);
-            color: var(--text-secondary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: var(--card-shadow);
-            transition: all 0.3s;
-        }
-        .theme-toggle:hover { color: var(--text-primary); transform: rotate(15deg); }
-
-        /* --- TABLA ESTILIZADA --- */
-        .custom-table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-        }
-
-        .custom-table th {
-            background-color: rgba(0,0,0,0.03);
-            color: var(--text-secondary);
-            font-weight: 700;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            padding: 18px;
-            border-bottom: 2px solid var(--bento-border);
-            letter-spacing: 0.5px;
-        }
-
-        .custom-table td {
-            padding: 18px;
-            vertical-align: middle;
-            border-bottom: 1px solid var(--bento-border);
-            color: var(--text-primary);
-            font-weight: 500;
-        }
-
-        .custom-table tr:hover td {
-            background-color: rgba(255,255,255,0.03); /* Highlight al pasar mouse */
-        }
-        
-        .custom-table tr:last-child td { border-bottom: none; }
-
-        /* --- BADGES Y ETIQUETAS --- */
-        .profit-badge {
-            padding: 8px 16px;
-            border-radius: 10px;
-            font-weight: 800;
-            font-family: 'Consolas', 'Monaco', monospace;
-            font-size: 0.95rem;
-            display: inline-block;
-            min-width: 100px;
-            text-align: center;
-            letter-spacing: -0.5px;
-        }
-        
-        /* Degradados para los Badges */
-        .badge-best { 
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%); 
-            color: white; 
-            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
-        }
-        .badge-worst { 
-            background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%); 
-            color: white; 
-            box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
-        }
-        .badge-mid { 
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); 
-            color: white; 
-            box-shadow: 0 4px 10px rgba(245, 158, 11, 0.2);
-        }
-
-        /* --- GRID LAYOUT MODIFICADO (ANCHO) --- */
-        .grid-layout-top {
-            display: grid;
-            /* AQUÍ ESTÁ EL CAMBIO: 400px para el panel izquierdo */
-            grid-template-columns: 400px 1fr; 
-            gap: 25px;
-            align-items: stretch;
-        }
-        @media (max-width: 992px) {
-            .grid-layout-top { grid-template-columns: 1fr; }
-        }
-        
-        /* Stats Footer Container */
-        .stats-container {
-            background: var(--stats-bg);
-            border-radius: 18px;
-            padding: 24px;
-            margin-top: auto;
-            border: 1px solid var(--bento-border);
-            position: relative;
-        }
-        
-        /* History Items */
-        .history-item {
-            background: rgba(0,0,0,0.05); /* Muy sutil */
-            border: 1px solid var(--bento-border);
-            border-radius: 16px;
-            margin-bottom: 12px;
-            overflow: hidden;
-            transition: background 0.2s;
-        }
-        .history-item:hover { background: rgba(0,0,0,0.08); }
-
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-<div class="container py-5">
-    <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-5">
-        <div>
-            <h2 class="fw-bold m-0 d-flex align-items-center gap-3">
-                <span style="background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 2rem;">
-                    Trade Dashboard
-                </span>
-            </h2>
-            <p class="text-secondary mt-1 mb-0" style="font-weight: 500;">Calculadora de rentabilidad profesional</p>
-        </div>
-        <div class="d-flex gap-3">
-            <button class="btn btn-outline-secondary d-flex align-items-center gap-2 px-3 py-2 rounded-4" onclick="saveToHistory()" style="border-color: var(--bento-border); color: var(--text-secondary);">
-                <i class="fa-solid fa-floppy-disk"></i> <span class="d-none d-md-block">Historial</span>
-            </button>
-            <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">
-                <i class="fa-solid fa-moon"></i>
-            </button>
-        </div>
-    </div>
-
-    <!-- Top Section: Grid 400px | Auto -->
-    <div class="grid-layout-top mb-4">
+    <div class="container py-5">
         
-        <!-- IZQUIERDA: Agregar Juego (Más Ancho) -->
-        <div class="bento-box">
-            <div class="bento-title"><i class="fa-solid fa-gamepad"></i> Nuevo Ingreso</div>
-            
-            <form id="addGameForm" class="d-flex flex-column h-100 justify-content-between">
-                <div class="d-flex flex-column gap-4">
-                    <div>
-                        <label class="small text-secondary fw-bold mb-2 ms-1">NOMBRE DEL JUEGO</label>
-                        <input type="text" id="gameName" class="form-control" placeholder="Ej: Ninja Gaiden" required>
-                    </div>
-                    
-                    <div>
-                        <label class="small text-secondary fw-bold mb-2 ms-1">COSTO (ARP)</label>
-                        <input type="number" id="gameArp" class="form-control" placeholder="$$$" required>
-                    </div>
-
-                    <div>
-                        <label class="small text-secondary fw-bold mb-2 ms-1">CANTIDAD KEYS (TF2)</label>
-                        <input type="number" id="gameKeys" class="form-control" placeholder="#" required>
-                    </div>
+        <!-- Header Superior -->
+        <div class="d-flex justify-content-between align-items-center mb-5">
+            <div class="d-flex align-items-center gap-3">
+                <div class="icon-box-header">
+                    <i class="fa-brands fa-steam symbol"></i>
                 </div>
-
-                <div class="mt-4">
-                    <button type="submit" class="btn btn-gradient w-100 py-3">
-                        <i class="fa-solid fa-plus me-2"></i> AGREGAR A LISTA
-                    </button>
-                </div>
-            </form>
-        </div>
-
-        <!-- DERECHA: Constantes y Stats -->
-        <div class="bento-box">
-            <div class="bento-title"><i class="fa-solid fa-sliders"></i> Variables de Mercado</div>
-            
-            <!-- INPUTS ARRIBA -->
-            <div class="row g-4">
-                <div class="col-md-6">
-                    <label class="small text-secondary fw-bold mb-2 ms-1">PRECIO STEAM (KEY)</label>
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="fa-brands fa-steam"></i></span>
-                        <input type="number" step="0.01" id="steamPrice" class="form-control fs-5 fw-bold" oninput="updateCalculations()">
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <label class="small text-secondary fw-bold mb-2 ms-1">PRECIO BINANCE (KEY)</label>
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="fa-solid fa-money-bill-transfer"></i></span>
-                        <input type="number" step="0.01" id="binancePrice" class="form-control fs-5 fw-bold" oninput="updateCalculations()">
-                    </div>
+                <div>
+                    <!-- Quitada la clase text-white fija, ahora usa variable del body -->
+                    <h3 class="fw-bold m-0 tracking-tight">Steam Trade Manager</h3>
+                    <p class="text-secondary small m-0 fw-bold">Calculadora de Arbitraje</p>
                 </div>
             </div>
 
-            <!-- STATS ABAJO -->
-            <div class="stats-container mt-4">
-                <div class="row align-items-center">
-                    <div class="col-5 border-end border-secondary-subtle">
-                        <div class="text-secondary small fw-bold mb-1 text-uppercase">Fee Steam</div>
-                        <div class="fs-4 fw-bold text-secondary">13.04%</div>
-                    </div>
-                    <div class="col-7 text-end">
-                        <div class="text-secondary small fw-bold mb-1 text-uppercase">Factor Neto Real</div>
-                        <div class="fs-2 fw-bold text-success" style="text-shadow: 0 0 20px rgba(74, 222, 128, 0.2);">86.96%</div>
-                    </div>
+            <!-- Info Sutil y Tema -->
+            <div class="d-flex align-items-center gap-4">
+                <div class="text-end d-none d-md-block">
+                    <div class="text-secondary small fw-bold opacity-50 text-uppercase ls-1">Fee Steam: 13.04%</div>
                 </div>
+                <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">
+                    <i class="fa-solid fa-sun"></i>
+                </button>
             </div>
         </div>
 
-    </div>
-
-    <!-- Main Table -->
-    <div class="bento-box mb-4 p-0">
-        <div class="p-4 d-flex justify-content-between align-items-center border-bottom border-secondary-subtle">
-            <div class="bento-title mb-0"><i class="fa-solid fa-chart-simple"></i> Tabla de Resultados</div>
-            <button class="btn btn-sm btn-outline-danger border-0" onclick="clearCurrentTable()">
-                <i class="fa-solid fa-trash-can me-1"></i> Limpiar
-            </button>
-        </div>
-        <div class="table-responsive">
-            <table class="custom-table">
-                <thead>
-                    <tr>
-                        <th class="ps-4">Juego</th>
-                        <th class="text-center">ARP Costo</th>
-                        <th class="text-center">Keys</th>
-                        <th class="text-center">Neto Steam ($)</th>
-                        <th class="text-center">ARP / 1 USD</th>
-                        <th class="text-center">Total Binance ($)</th>
-                        <th class="text-center pe-4"></th>
-                    </tr>
-                </thead>
-                <tbody id="gamesTableBody">
-                    <!-- JS Injected -->
-                </tbody>
-            </table>
-        </div>
-        <div id="emptyState" class="text-center py-5 text-secondary" style="display:none;">
-            <div class="mb-3">
-                <i class="fa-solid fa-layer-group fs-1 opacity-25"></i>
-            </div>
-            <p class="m-0 opacity-75">La tabla está vacía.</p>
-            <p class="small opacity-50">Agrega juegos desde el panel izquierdo.</p>
-        </div>
-    </div>
-
-    <!-- History Section -->
-    <div class="bento-box">
-        <div class="bento-title mb-3"><i class="fa-solid fa-clock-rotate-left"></i> Historial Guardado</div>
-        <div id="historyContainer">
-            <!-- JS Injected History -->
-        </div>
-        <div id="emptyHistory" class="text-center py-4 text-secondary small opacity-50">
-            No hay historiales guardados todavía.
-        </div>
-    </div>
-
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    // --- ESTADO DE LA APLICACIÓN ---
-    let appState = {
-        steamPrice: 2.16,
-        binancePrice: 1.62,
-        games: [],
-        history: []
-    };
-
-    const COMISION = 0.8696;
-
-    // --- ELEMENTOS DOM ---
-    const steamInput = document.getElementById('steamPrice');
-    const binanceInput = document.getElementById('binancePrice');
-    const tableBody = document.getElementById('gamesTableBody');
-    const historyContainer = document.getElementById('historyContainer');
-    const themeBtn = document.getElementById('themeBtn');
-
-    // --- INICIALIZACIÓN ---
-    document.addEventListener('DOMContentLoaded', () => {
-        loadData();
-        renderTable();
-        renderHistory();
-        applyTheme(localStorage.getItem('theme') || 'dark');
-    });
-
-    // --- LÓGICA DE DATOS ---
-    function saveData() {
-        appState.steamPrice = parseFloat(steamInput.value) || 0;
-        appState.binancePrice = parseFloat(binanceInput.value) || 0;
-        localStorage.setItem('tradeApp_v5', JSON.stringify(appState));
-    }
-
-    function loadData() {
-        const data = localStorage.getItem('tradeApp_v5');
-        if (data) {
-            const parsed = JSON.parse(data);
-            appState = { ...appState, ...parsed }; 
-        }
-        steamInput.value = appState.steamPrice;
-        binanceInput.value = appState.binancePrice;
-    }
-
-    // --- RENDERIZADO TABLA ---
-    function renderTable() {
-        tableBody.innerHTML = '';
-        const steamP = parseFloat(steamInput.value) || 0;
-        const binanceP = parseFloat(binanceInput.value) || 0;
-
-        if (appState.games.length === 0) {
-            document.getElementById('emptyState').style.display = 'block';
-            return;
-        }
-        document.getElementById('emptyState').style.display = 'none';
-
-        // Calcular ratios
-        const validRatios = appState.games.map(g => {
-            const net = g.keys * steamP * COMISION;
-            return net > 0 ? g.arp / net : null;
-        }).filter(r => r !== null);
-        
-        const minRatio = Math.min(...validRatios);
-        const maxRatio = Math.max(...validRatios);
-
-        appState.games.forEach((game, index) => {
-            const netoSteam = game.keys * steamP * COMISION;
-            const arpPerUsd = netoSteam > 0 ? (game.arp / netoSteam) : 0;
-            const totalBinance = game.keys * binanceP;
-
-            // Badges
-            let badgeClass = 'badge-mid';
-            if (validRatios.length > 1) {
-                if (arpPerUsd === minRatio) badgeClass = 'badge-best';
-                if (arpPerUsd === maxRatio) badgeClass = 'badge-worst';
-            } else if (validRatios.length === 1) {
-                 badgeClass = 'badge-best';
-            }
-
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td class="ps-4 fw-bold" style="color: var(--text-primary); font-size: 1.05rem;">${game.name}</td>
-                <td class="text-center text-secondary font-monospace">${game.arp.toLocaleString()}</td>
-                <td class="text-center text-info fw-bold">${game.keys}</td>
-                <td class="text-center text-secondary">$${netoSteam.toFixed(2)}</td>
-                <td class="text-center">
-                    <span class="profit-badge ${badgeClass}">${arpPerUsd.toFixed(2)}</span>
-                </td>
-                <td class="text-center fw-bold text-success" style="font-size: 1.1rem;">$${totalBinance.toFixed(2)}</td>
-                <td class="text-center pe-4">
-                    <button class="btn btn-sm btn-link text-danger p-0 opacity-50 hover-opacity-100" onclick="deleteGame(${index})">
-                        <i class="fa-solid fa-xmark fs-5"></i>
-                    </button>
-                </td>
-            `;
-            tableBody.appendChild(tr);
-        });
-    }
-
-    // --- EVENTOS ---
-    document.getElementById('addGameForm').addEventListener('submit', (e) => {
-        e.preventDefault();
-        const name = document.getElementById('gameName').value;
-        const arp = parseFloat(document.getElementById('gameArp').value);
-        const keys = parseFloat(document.getElementById('gameKeys').value);
-
-        if(name && arp && keys) {
-            appState.games.push({ name, arp, keys });
-            saveData();
-            renderTable();
-            
-            document.getElementById('gameName').value = '';
-            document.getElementById('gameArp').value = '';
-            document.getElementById('gameKeys').value = '';
-            document.getElementById('gameName').focus();
-        }
-    });
-
-    window.updateCalculations = () => {
-        saveData();
-        renderTable();
-    };
-
-    window.deleteGame = (index) => {
-        appState.games.splice(index, 1);
-        saveData();
-        renderTable();
-    };
-
-    window.clearCurrentTable = () => {
-        if(confirm("¿Estás seguro de borrar la tabla actual?")) {
-            appState.games = [];
-            saveData();
-            renderTable();
-        }
-    };
-
-    // --- HISTORIAL ---
-    window.saveToHistory = () => {
-        if (appState.games.length === 0) return alert("Agrega juegos antes de guardar.");
-        
-        const snapshot = {
-            date: new Date().toLocaleString(),
-            steamPrice: appState.steamPrice,
-            binancePrice: appState.binancePrice,
-            games: [...appState.games]
-        };
-        
-        appState.history.unshift(snapshot);
-        if (appState.history.length > 10) appState.history.pop();
-        
-        saveData();
-        renderHistory();
-    };
-
-    window.deleteHistoryItem = (index) => {
-        appState.history.splice(index, 1);
-        saveData();
-        renderHistory();
-    }
-
-    function renderHistory() {
-        historyContainer.innerHTML = '';
-        if (!appState.history || appState.history.length === 0) {
-            document.getElementById('emptyHistory').style.display = 'block';
-            return;
-        }
-        document.getElementById('emptyHistory').style.display = 'none';
-
-        appState.history.forEach((item, index) => {
-            const div = document.createElement('div');
-            div.className = 'history-item';
-            
-            let bestGame = item.games.reduce((prev, curr) => {
-                const prevRatio = prev.arp / (prev.keys * item.steamPrice * COMISION);
-                const currRatio = curr.arp / (curr.keys * item.steamPrice * COMISION);
-                return prevRatio < currRatio ? prev : curr;
-            });
-
-            div.innerHTML = `
-                <div class="history-header" onclick="this.parentElement.classList.toggle('active')">
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 p-2 rounded-3">
-                            <i class="fa-regular fa-calendar"></i>
-                        </div>
+        <!-- Precios Globales -->
+        <div class="row g-4 mb-5">
+            <div class="col-md-6">
+                <div class="stat-card gradient-blue">
+                    <div class="d-flex justify-content-between align-items-start">
                         <div>
-                            <div class="fw-bold text-primary-emphasis">${item.date}</div>
-                            <div class="small text-secondary">Key Steam: $${item.steamPrice} • Binance: $${item.binancePrice}</div>
+                            <div class="stat-label">Precio Steam (Key)</div>
+                            <div class="d-flex align-items-center mt-2">
+                                <span class="fs-2 me-1 fw-bold">$</span>
+                                <input type="number" id="steamPrice" class="stat-input" value="2.16" step="0.01">
+                            </div>
                         </div>
-                    </div>
-                    <div class="d-flex align-items-center gap-3">
-                         <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-3 py-2">
-                            Mejor: ${bestGame.name}
-                         </span>
-                        <i class="fa-solid fa-chevron-down small text-secondary"></i>
+                        <i class="fa-brands fa-steam stat-icon"></i>
                     </div>
                 </div>
-                <div class="history-body">
-                    <div class="table-responsive">
-                    <table class="table table-sm table-borderless text-secondary mb-0">
-                        <thead><tr class="text-secondary opacity-50 border-bottom border-secondary border-opacity-10">
-                            <th class="fw-normal">Juego</th><th>ARP</th><th>Keys</th><th>ARP/1$</th>
-                        </tr></thead>
-                        <tbody>
-                            ${item.games.map(g => {
-                                const ratio = g.arp / (g.keys * item.steamPrice * COMISION);
-                                return `<tr>
-                                    <td class="fw-bold text-primary-emphasis">${g.name}</td>
-                                    <td>${g.arp}</td>
-                                    <td>${g.keys}</td>
-                                    <td class="text-success fw-bold">${ratio.toFixed(2)}</td>
-                                </tr>`;
-                            }).join('')}
-                        </tbody>
-                    </table>
-                    </div>
-                     <div class="text-end mt-3 pt-2 border-top border-secondary border-opacity-10">
-                        <button class="btn btn-sm btn-outline-danger border-0" onclick="event.stopPropagation(); deleteHistoryItem(${index})">
-                            <i class="fa-regular fa-trash-can me-1"></i> Eliminar Registro
-                        </button>
+            </div>
+
+            <div class="col-md-6">
+                <div class="stat-card gradient-purple">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="stat-label">Precio Binance (Key)</div>
+                            <div class="d-flex align-items-center mt-2">
+                                <span class="fs-2 me-1 fw-bold">$</span>
+                                <input type="number" id="binancePrice" class="stat-input" value="1.62" step="0.01">
+                            </div>
+                        </div>
+                        <i class="fa-brands fa-bitcoin stat-icon"></i>
                     </div>
                 </div>
-            `;
-            historyContainer.appendChild(div);
-        });
-    }
+            </div>
+        </div>
 
-    // --- TEMA ---
-    window.toggleTheme = () => {
-        const html = document.documentElement;
-        const current = html.getAttribute('data-bs-theme');
-        const next = current === 'dark' ? 'light' : 'dark';
-        applyTheme(next);
-    };
+        <!-- Tabla de Resultados -->
+        <div class="table-container mb-5">
+            <div class="table-header-bar d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="fa-solid fa-chart-simple text-secondary"></i>
+                    <h6 class="m-0 fw-bold text-uppercase text-secondary ls-1">Tabla de Resultados</h6>
+                </div>
+                <div class="d-flex gap-3">
+                    <button class="btn btn-sm btn-action-add" onclick="addNewRow()">
+                        <i class="fa-solid fa-plus me-1"></i> Agregar Fila
+                    </button>
+                    <button class="btn btn-sm text-danger opacity-75 hover-opacity-100" onclick="clearTable()">
+                        <i class="fa-solid fa-trash-can"></i> Limpiar
+                    </button>
+                </div>
+            </div>
 
-    function applyTheme(theme) {
-        document.documentElement.setAttribute('data-bs-theme', theme);
-        localStorage.setItem('theme', theme);
-        const icon = themeBtn.querySelector('i');
-        icon.className = theme === 'dark' ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
-    }
-</script>
+            <div class="table-responsive">
+                <table class="table custom-table align-middle m-0" id="mainTable">
+                    <thead>
+                        <tr>
+                            <th class="ps-4">JUEGO</th>
+                            <th class="text-center" style="width: 100px;">ARP COSTO</th>
+                            <th class="text-center" style="width: 80px;">KEYS</th>
+                            <th class="text-center text-secondary" style="width: 120px;">NETO STEAM</th>
+                            <th class="text-center text-secondary" style="width: 120px;">BINANCE</th>
+                            <th class="text-center" style="width: 130px;">ARP / 1 USD</th>
+                            <th style="width: 40px;"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="gamesTableBody">
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="emptyState" class="text-center py-5 d-none">
+                <i class="fa-solid fa-layer-group fs-1 text-secondary opacity-25 mb-3"></i>
+                <h6 class="text-secondary fw-bold">Sin datos activos</h6>
+            </div>
+
+            <div class="table-footer-bar">
+                <button class="btn btn-save-history" onclick="saveToHistory()">
+                    <i class="fa-solid fa-floppy-disk me-2"></i> Guardar Historial
+                </button>
+            </div>
+        </div>
+
+        <!-- Historial -->
+        <div class="mb-5">
+            <h6 class="text-secondary fw-bold text-uppercase small mb-3 ls-1 px-1">Historial de Sesiones</h6>
+            <div id="historyContainer"></div>
+             <div id="emptyHistory" class="text-center py-4 text-secondary small opacity-50">No hay historiales.</div>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>

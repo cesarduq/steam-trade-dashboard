@@ -1,0 +1,249 @@
+:root {
+    /* --- DARK MODE (Base) --- */
+    --bg-body: #0b101b;
+    --card-bg: #151e2e;
+    --header-bg: #1e293b;
+    
+    /* Textos Base */
+    --text-main: #ffffff;       /* Texto principal (Blanco en Dark) */
+    --text-inverse: #000000;    /* Texto para fondos claros */
+    --text-muted: #94a3b8;
+    
+    --border-color: rgba(255, 255, 255, 0.05);
+    
+    /* Gradientes (Base) */
+    --grad-blue: linear-gradient(135deg, #141E30   0%, #243B55  100%);
+    --grad-purple: linear-gradient(135deg, #0c84a2 0%, #00aa7d 100%);
+    
+    /* Neones */
+    --neon-green: #10b981;
+    --neon-orange: #f59e0b;
+    --neon-red: #ef4444;
+    
+    /* Sombras */
+    --card-shadow: 0 10px 20px -5px rgba(0,0,0,0.3);
+    --input-focus-bg: rgba(0,0,0,0.2);
+}
+
+[data-bs-theme="light"] {
+    /* --- LIGHT MODE (Estilo SaaS/Risk Manager) --- */
+    --bg-body: #f1f5f9;       /* Gris azulado muy suave (Fondo) */
+    --card-bg: #ffffff;       /* Blanco puro (Tarjetas) */
+    --header-bg: #f8fafc;     /* Encabezado de tabla muy sutil */
+    
+    --text-main: #0f172a;     /* Texto principal (Azul oscuro casi negro) */
+    --text-inverse: #ffffff;  /* Texto para fondos oscuros (Gradientes) */
+    --text-muted: #64748b;
+    
+    --border-color: #e2e8f0;  /* Borde gris visible */
+    
+    /* Gradientes MÁS SERIOS para Light Mode */
+    --grad-blue: linear-gradient(135deg, #141E30  0%, #243B55  100%);
+    --grad-purple: linear-gradient(135deg, #169dbe 0%, #00aa7d 100%);
+    
+    /* Sombras suaves para fondo blanco */
+    --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --input-focus-bg: #f1f5f9;
+}
+
+body {
+    background-color: var(--bg-body);
+    font-family: 'Inter', sans-serif;
+    color: var(--text-main);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* --- THEME TOGGLE --- */
+.theme-toggle {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: 0.2s;
+    box-shadow: var(--card-shadow);
+}
+.theme-toggle:hover { color: var(--text-main); border-color: #3b82f6; }
+
+/* HEADER ICON */
+.icon-box-header {
+    width: 45px;
+    height: 45px;
+    background: var(--grad-blue);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: white; /* Siempre blanco porque el fondo es azul */
+    box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+}
+
+.ls-1 { letter-spacing: 0.5px; }
+
+/* --- STAT CARDS --- */
+.stat-card {
+    border-radius: 16px;
+    padding: 24px;
+    /* IMPORTANTE: El texto dentro de las cards de color siempre debe ser blanco */
+    color: white; 
+    height: 100%;
+    border: none;
+    box-shadow: var(--card-shadow);
+    position: relative;
+    overflow: hidden;
+}
+
+.gradient-blue { background: var(--grad-blue); }
+.gradient-purple { background: var(--grad-purple); }
+
+.stat-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; opacity: 0.9; margin-bottom: 5px; }
+.stat-input {
+    background: transparent;
+    border: none;
+    color: white; /* Siempre blanco en las cards */
+    font-size: 2.5rem;
+    font-weight: 800;
+    width: 100%;
+    outline: none;
+}
+.stat-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.stat-icon { position: absolute; right: 20px; top: 20px; font-size: 3rem; opacity: 0.15; transform: rotate(-10deg); }
+
+/* --- TABLE CONTAINER --- */
+.table-container {
+    background: var(--card-bg);
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--card-shadow);
+}
+
+.table-header-bar {
+    background-color: var(--header-bg);
+    padding: 15px 25px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.custom-table th {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border-color);
+    padding: 15px 10px;
+    background: var(--card-bg);
+}
+
+.custom-table td { 
+    padding: 12px 10px; 
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-main); 
+}
+
+/* Inputs de la tabla */
+.table-input {
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--text-main); /* Se adapta al tema (Blanco o Negro) */
+    width: 100%;
+    font-weight: 600;
+    border-radius: 6px;
+    padding: 6px 10px;
+}
+.table-input:focus { 
+    background: var(--input-focus-bg); 
+    border-color: #3b82f6; 
+    outline: none; 
+}
+
+/* --- BADGES & BUTTONS --- */
+.badge-ratio {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-weight: 800;
+    font-family: monospace;
+    font-size: 0.95rem;
+    min-width: 90px;
+    text-align: center;
+}
+
+/* Colores solidos para mejor contraste en Light Mode */
+.bg-best { background: var(--neon-green); color: #ffffff; text-shadow: 0 1px 2px rgba(0,0,0,0.2); }
+.bg-mid { background: var(--neon-orange); color: #ffffff; text-shadow: 0 1px 2px rgba(0,0,0,0.2); }
+.bg-worst { background: var(--neon-red); color: #ffffff; text-shadow: 0 1px 2px rgba(0,0,0,0.2); }
+
+.btn-action-add { 
+    background: var(--grad-purple); 
+    color: white; 
+    font-weight: 600; 
+    border: none; 
+    border-radius: 8px; 
+    padding: 8px 16px; 
+    font-size: 0.85rem;
+    box-shadow: 0 2px 5px rgba(0, 170, 125, 0.3);
+}
+.btn-action-add:hover { opacity: 0.9; color: white; transform: translateY(-1px); }
+
+[data-bs-theme="light"] .btn-action-add {
+    background: var(--grad-blue);
+    box-shadow: 0 2px 5px rgba(37, 99, 235, 0.3);
+}
+
+.table-footer-bar { padding: 15px 25px; background: var(--header-bg); display: flex; justify-content: flex-end; border-top: 1px solid var(--border-color); }
+.btn-save-history { 
+    background: var(--grad-purple); 
+    color: white; 
+    font-weight: 700; 
+    border: none; 
+    border-radius: 8px; 
+    padding: 10px 20px;
+    box-shadow: 0 4px 10px rgba(0, 170, 125, 0.3);
+}
+
+[data-bs-theme="light"] .btn-save-history {
+    background: var(--grad-blue);
+    box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+}
+
+/* --- HISTORY --- */
+.history-item {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    margin-bottom: 12px;
+    overflow: hidden;
+    box-shadow: var(--card-shadow);
+}
+
+.history-header { 
+    padding: 15px 20px; 
+    cursor: pointer; 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    background: var(--card-bg);
+}
+.history-header:hover { background: var(--header-bg); }
+
+.history-body { 
+    display: none; 
+    background: var(--header-bg); /* Fondo gris claro en Light, Oscuro en Dark */
+    border-top: 1px solid var(--border-color);
+}
+.history-item.open .history-body { display: block; }
+
+.history-table th { color: var(--text-muted); padding: 12px 20px; border-bottom: 1px solid var(--border-color); }
+.history-table td { padding: 10px 20px; color: var(--text-main); border-bottom: 1px solid var(--border-color); }
+
+/* Colores de texto en Historial */
+.text-ratio-green { color: #059669 !important; font-weight: 800; } /* Verde mas oscuro para que se lea en blanco */
+.text-ratio-yellow { color: #d97706 !important; font-weight: 800; }
+.text-ratio-red { color: #dc2626 !important; font-weight: 800; }
+
+/* En modo oscuro, los textos de ratio necesitan ser mas brillantes */
+[data-bs-theme="dark"] .text-ratio-green { color: var(--neon-green) !important; }
+[data-bs-theme="dark"] .text-ratio-yellow { color: var(--neon-orange) !important; }
+[data-bs-theme="dark"] .text-ratio-red { color: var(--neon-red) !important; }
